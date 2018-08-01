@@ -1,0 +1,8 @@
+GSL_CFLAGS = -I/usr/include
+GSL_LIBS = -L/usr/lib -lgsl -lgslcblas -lm
+GMP_CFLAGS = -g -O2
+GMP_LIBS = -lgsl -lgmp -lgslcblas -lm 
+
+PKG_LIBS= $(GSL_LIBS) $(GMP_LIBS)
+PKG_CFLAGS= -DGMP $(GSL_CFLAGS) $(GMP_CFLAGS)
+PKG_CXXFLAGS= -DGMP $(GSL_CFLAGS) $(GMP_CFLAGS)

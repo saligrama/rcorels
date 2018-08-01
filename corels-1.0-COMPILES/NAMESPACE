@@ -1,0 +1,8 @@
+useDynLib(corels)
+importFrom("methods", "as", "new")
+importFrom("utils", "write.table")
+import(Rcpp)
+
+exportPattern("^[[:alpha:]]+")
+
+S3method(corels, corels)
