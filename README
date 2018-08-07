@@ -1,11 +1,11 @@
-Scalable Bayesian Rule List library.
+# R API for CORELS
 
-This distribution contains the source code distribution to build a library and
-test executable for the construction of scalable bayesian rule lists. The
-library contains functions to train a model (train) and make predictions
-using the model (predict). It also contains a rule list library for manipulating
-rule lists.
+More details to come soon when code is cleaned up and so on.
 
-The executable, sbrlmod, is a test program that exercises the rule library
-as well as the training and prediction.
+To install, cd into the rcorelsv2 directory and run
 
+# R CMD INSTALL .
+
+Within R, you can use the functions train_from_file() and train() to train the CORELS model.
+
+Predict and print methods coming soon.
