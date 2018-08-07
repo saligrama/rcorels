@@ -13,6 +13,12 @@
 #define D_ABLATION           0
 #define D_CALCULATE_SIZE     0
 #define D_LATEX_OUT          0
+#define D_V_PROGRESS         1
+#define D_V_LOG              0
+#define D_V_RULE             0
+#define D_V_LABEL            0
+#define D_V_SAMPLES          0
+#define D_V_SILENT           0
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,13 +29,19 @@ typedef struct run_params {
     char* log_fname;
     int max_num_nodes;
     double c;
-    char* vstring;
     int curiosity_policy;
     int map_type;
     int freq;
     int ablation;
     int calculate_size;
     int latex_out;
+
+    int v_progress;
+    int v_log;
+    int v_rule;
+    int v_label;
+    int v_samples;
+    int v_silent;
 
     int nrules;
     int nlabels;

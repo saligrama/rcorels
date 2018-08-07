@@ -12,22 +12,11 @@ NullLogger* logger;
 
 extern "C" {
 
-double run_corels (run_params_t params, tracking_vector<unsigned short, DataStruct::Tree> rulelist, tracking_vector<bool, DataStruct::Tree> preds) {
+double run_corels (run_params_t *params, tracking_vector<unsigned short, DataStruct::Tree>& rulelist, tracking_vector<bool, DataStruct::Tree>& preds) {
 
     std::set<std::string> verbosity;
 
     const char *voptions = "rule|label|samples|progress|log|silent";
-
-    char *vopt = NULL;
-    char *vcopy = strdup(params.vstring);
-    while ((vopt = strsep(&vcopy, ",")) != NULL) {
-        if (!strstr(voptions, vopt)) {
-            fprintf(stderr, "verbosity options must be one or more of (%s), separated with commas (i.e. -v progress,log)\n", voptions);
-            return -1.0;
-        }
-        verbosity.insert(vopt);
-    }
-    free(vcopy);
 
     if (verbosity.count("samples") && !(verbosity.count("rule") || verbosity.count("label"))) {
         fprintf(stderr, "verbosity 'samples' option must be combined with at least one of (rule|label)\n");
@@ -50,19 +39,19 @@ double run_corels (run_params_t params, tracking_vector<unsigned short, DataStru
         print_machine_info();
 
     if (verbosity.count("rule")) {
-        printf("%d rules %d samples\n\n", params.nrules, params.nsamples);
-        rule_print_all(params.rules, params.nrules, params.nsamples, (verbosity.count("samples")));
+        printf("%d rules %d samples\n\n", params->nrules, params->nsamples);
+        rule_print_all(params->rules, params->nrules, params->nsamples, (verbosity.count("samples")));
         printf("\n\n");
     }
 
     if (verbosity.count("label")) {
-        printf("Labels (%d) for %d samples\n\n", params.nlabels, params.nsamples);
-        rule_print_all(params.labels, params.nlabels, params.nsamples, (verbosity.count("samples")));
+        printf("Labels (%d) for %d samples\n\n", params->nlabels, params->nsamples);
+        rule_print_all(params->labels, params->nlabels, params->nsamples, (verbosity.count("samples")));
         printf("\n\n");
     }
 
     if (verbosity.count("log")) {
-        logger = new Logger(params.c, params.nrules, verbosity, params.log_fname, params.freq);
+        logger = new Logger(params->c, params->nrules, verbosity, params->log_fname, params->freq);
     } else {
         logger = new NullLogger();
         logger->setVerbosity(verbosity);
@@ -73,17 +62,17 @@ double run_corels (run_params_t params, tracking_vector<unsigned short, DataStru
     Queue* q;
     strcpy(run_type, "LEARNING RULE LIST via ");
     char const *type = "node";
-    if (params.curiosity_policy == 1) {
+    if (params->curiosity_policy == 1) {
         strcat(run_type, "CURIOUS");
         q = new Queue(curious_cmp, run_type);
         type = "curious";
-    } else if (params.curiosity_policy == 2) {
+    } else if (params->curiosity_policy == 2) {
         strcat(run_type, "LOWER BOUND");
         q = new Queue(lb_cmp, run_type);
-    } else if (params.curiosity_policy == 3) {
+    } else if (params->curiosity_policy == 3) {
         strcat(run_type, "OBJECTIVE");
         q = new Queue(objective_cmp, run_type);
-    } else if (params.curiosity_policy == 4) {
+    } else if (params->curiosity_policy == 4) {
         strcat(run_type, "DFS");
         q = new Queue(dfs_cmp, run_type);
     } else {
@@ -92,11 +81,11 @@ double run_corels (run_params_t params, tracking_vector<unsigned short, DataStru
     }
 
     PermutationMap* p;
-    if (params.map_type == 1) {
+    if (params->map_type == 1) {
         strcat(run_type, " Prefix Map\n");
         PrefixPermutationMap* prefix_pmap = new PrefixPermutationMap;
         p = (PermutationMap*) prefix_pmap;
-    } else if (params.map_type == 2) {
+    } else if (params->map_type == 2) {
         strcat(run_type, " Captured Symmetry Map\n");
         CapturedPermutationMap* cap_pmap = new CapturedPermutationMap;
         p = (PermutationMap*) cap_pmap;
@@ -106,15 +95,15 @@ double run_corels (run_params_t params, tracking_vector<unsigned short, DataStru
         p = (PermutationMap*) null_pmap;
     }
 
-    CacheTree* tree = new CacheTree(params.nsamples, params.nrules, params.c, params.rules, params.labels, params.meta, params.ablation, params.calculate_size, type);
+    CacheTree* tree = new CacheTree(params->nsamples, params->nrules, params->c, params->rules, params->labels, params->meta, params->ablation, params->calculate_size, type);
     if (verbosity.count("progress"))
         printf("%s", run_type);
     // runs our algorithm
-    bbound(tree, params.max_num_nodes, q, p);
+    bbound(tree, params->max_num_nodes, q, p);
 
     const tracking_vector<unsigned short, DataStruct::Tree>& r_list = tree->opt_rulelist();
 
-    double accuracy = 1.0 - tree->min_objective() + params.c*r_list.size();
+    double accuracy = 1.0 - tree->min_objective() + params->c*r_list.size();
 
     if (verbosity.count("progress")) {
         printf("final num_nodes: %zu\n", tree->num_nodes());
@@ -124,8 +113,9 @@ double run_corels (run_params_t params, tracking_vector<unsigned short, DataStru
    }
 
     /*print_final_rulelist(r_list, tree->opt_predictions(),
-                     params.latex_out, params.rules, params.labels, params.opt_fname, verbosity.count("progress"));
+                     params->latex_out, params->rules, params->labels, params->opt_fname, verbosity.count("progress"));
     */
+
     rulelist = r_list;
     preds = tree->opt_predictions();
 

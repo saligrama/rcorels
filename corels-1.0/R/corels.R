@@ -1,10 +1,12 @@
-train_from_file.corels <- function(data_fname,label_fname,meta_fname=NULL,curiosity_policy=2,max_nodes=10000, regularization=0.01, verbosity=list("progress"), map_type=2, ablation=0, calculate_size=FALSE, latex_out=FALSE) {
-    params_list <- list(curiosity_policy, max_nodes, regularization, verbosity, map_type, ablation, calculate_size, latex_out)
+train_from_file.corels <- function(data_fname,label_fname,meta_fname="",curiosity_policy=2,max_nodes=10000, regularization=0.01, verbosity="progress", map_type=1, ablation=0, calculate_size=0, latex_out=0) {
+    # ugly hack to get Rcpp to be able to recognize the parameters
+    params_list <- c(toString(curiosity_policy), toString(max_nodes), toString(regularization), toString(verbosity), toString(map_type), toString(ablation), toString(calculate_size), toString(latex_out))
+    print(params_list)
     rs <- .Call('corels_train', PACKAGE='corels', params_list, data_fname, label_fname, meta_fname)
     rs
 }
 
-train.corels <- function(tdata,pos_sign="1", neg_sign="0",rule_minlen=1,rule_maxlen=1,minsupport_pos=0.10,minsupport_neg=0.10,curiosity_policy=2,max_nodes=10000, regularization=0.01, verbosity=list("progress"), map_type=2, ablation=0, calculate_size=FALSE, latex_out=FALSE) {
+train.corels <- function(tdata,pos_sign="1", neg_sign="0",rule_minlen=1,rule_maxlen=1,minsupport_pos=0.10,minsupport_neg=0.10,curiosity_policy=2,max_nodes=10000, regularization=0.01, verbosity="progress", map_type=1, ablation=0, calculate_size=0, latex_out=1) {
     params_list <- list(curiosity_policy, max_nodes, regularization, verbosity, map_type, ablation, calculate_size, latex_out)
     pos_data <- tdata[tdata$label==pos_sign,]
     neg_data <- tdata[tdata$label==neg_sign,]
@@ -30,7 +32,7 @@ train.corels <- function(tdata,pos_sign="1", neg_sign="0",rule_minlen=1,rule_max
     featurenames <- featurenames$x
     # indices for the negative features
     neg_idx <- sort(neg_combined_featurenames, index.return=TRUE)$ix
-    
+
     pos_mat3 <- pos_mat2[pos_idx, ]
     neg_mat3 <- neg_mat2[neg_idx, ]
     # now we had the rows correct. let's fix the columns (rules)
@@ -40,13 +42,17 @@ train.corels <- function(tdata,pos_sign="1", neg_sign="0",rule_minlen=1,rule_max
     # get the columns correct for feature_rule matrix
     mat <- as.matrix(cbind(pos_mat3, neg_mat3)[, idx])
 
-    write.table(as.matrix(t(mat_data_rules)), file='tdata_R.out', sep=' ', row.names=rulenames, col.names=FALSE, quote=FALSE)
+    mat_data_feature <- get_data_feature_mat(tdata, featurenames)
+    # get the data_rule matrix by multiplying data_feature and feature_rule matrices
+    mat_data_rules <- mat_data_feature %*% mat
+    mat_data_rules <- t(t(mat_data_rules)>=c(colSums(mat)))+0
+
+    write.table(as.matrix(t(mat_data_rules)), file='/tmp/tdata_R.out', sep=' ', row.names=rulenames, col.names=FALSE, quote=FALSE)
     label <- t(cbind((tdata$label==neg_sign) +0, (tdata$label==pos_sign) +0))
-    write.table(as.matrix(label), file='tdata_R.label', sep=' ', row.names=c("{label=0}", "{label=1}"), col.names=FALSE, quote=FALSE)
+    write.table(as.matrix(label), file='/tmp/tdata_R.label', sep=' ', row.names=c("{label=0}", "{label=1}"), col.names=FALSE, quote=FALSE)
 
     # TODO support for minority points bound
-
-    rs <-.Call('corels_train', PACKAGE='corels', params_list, 'tdata_R.out', 'tdata_R.label', NULL)
+    rs <- train_from_file.corels('/tmp/tdata_R.out', '/tmp/tdata_R.label', curiosity_policy=curiosity_policy, max_nodes=max_nodes, regularization=regularization, verbosity=verbosity, map_type=map_type, ablation=ablation, calculate_size=calculate_size, latex_out=latex_out)
 
     structure(list(rs=rs, rulenames=rulenames, featurenames=featurenames, mat_feature_rule=mat), class="corels")
 }
