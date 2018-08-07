@@ -1,8 +1,8 @@
-# R API for CORELS
+R API for CORELS
 
 More details to come soon when code is cleaned up and so on.
 
-To install, cd into the rcorelsv2 directory and run
+To install, cd into the rcorels directory and run
 
 # R CMD INSTALL .
 
