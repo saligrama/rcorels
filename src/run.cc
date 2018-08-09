@@ -16,24 +16,19 @@ double run_corels (run_params_t *params, tracking_vector<unsigned short, DataStr
 
     std::set<std::string> verbosity;
 
-    const char *voptions = "rule|label|samples|progress|log|silent";
-
-    if (verbosity.count("samples") && !(verbosity.count("rule") || verbosity.count("label"))) {
-        fprintf(stderr, "verbosity 'samples' option must be combined with at least one of (rule|label)\n");
-        return -1.0;
-    }
-    if (verbosity.size() > 2 && verbosity.count("silent")) {
-        fprintf(stderr, "verbosity 'silent' option must be passed without any additional verbosity parameters\n");
-        return -1.0;
-    }
-
-    if (verbosity.size() == 0) {
+    if (params->v_progress)
         verbosity.insert("progress");
-    }
+    if (params->v_log)
+        verbosity.insert("log");
+    if (params->v_rule)
+        verbosity.insert("rule");
+    if (params->v_label)
+        verbosity.insert("label");
+    if (params->v_samples)
+        verbosity.insert("samples");
 
-    if (verbosity.count("silent")) {
-        verbosity.clear();
-    }
+    if (verbosity.size() == 0)
+        verbosity.insert("progress");
 
     if (verbosity.count("log"))
         print_machine_info();

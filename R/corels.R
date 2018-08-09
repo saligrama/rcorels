@@ -1,6 +1,6 @@
 train_from_file.corels <- function(data_fname,label_fname,meta_fname="",curiosity_policy=2,max_nodes=10000, regularization=0.01, verbosity="progress", map_type=1, ablation=0, calculate_size=0, latex_out=0) {
     # ugly hack to get Rcpp to be able to recognize the parameters
-    params_list <- c(toString(curiosity_policy), toString(max_nodes), toString(regularization), toString(verbosity), toString(map_type), toString(ablation), toString(calculate_size), toString(latex_out))
+    params_list <- c(toString(curiosity_policy), format(max_nodes, scientific=FALSE), toString(regularization), toString(verbosity), toString(map_type), toString(ablation), toString(calculate_size), toString(latex_out))
     print(params_list)
     rs <- .Call('corels_train', PACKAGE='corels', params_list, data_fname, label_fname, meta_fname)
     rs

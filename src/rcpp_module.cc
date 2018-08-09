@@ -18,19 +18,32 @@ int load_params(Rcpp::StringVector *params_list, run_params_t *params) {
     const char* vstring = (Rcpp::as<std::string> (params_list[0][3])).c_str();
     char *vopt = NULL;
     char *vcopy = strdup(vstring);
+    int nparams = 0;
     while ((vopt = strsep(&vcopy, ",")) != NULL) {
-        if (strcmp(vopt, "progress") == 0)
+        if (strcmp(vopt, "progress") == 0) {
             params->v_progress = 1;
-        if (strcmp(vopt, "log") == 0)
+        } else if (strcmp(vopt, "log") == 0) {
             params->v_log = 1;
-        if (strcmp(vopt, "rule") == 0)
+        } else if (strcmp(vopt, "rule") == 0) {
             params->v_rule = 1;
-        if (strcmp(vopt, "label") == 0)
+        } else if (strcmp(vopt, "label") == 0) {
             params->v_label = 1;
-        if (strcmp(vopt, "samples") == 0)
+        } else if (strcmp(vopt, "samples") == 0) {
             params->v_samples = 1;
-        if (strcmp(vopt, "silent") == 0)
+        } else if (strcmp(vopt, "silent") == 0) {
             params->v_silent = 1;
+        } else {
+            Rcpp::Rcerr << "Bad verbosity option: " << vopt << std::endl;
+            return -1;
+        }
+    }
+    if (params->v_samples && !(params->v_rule || params->v_label)) {
+        Rcpp::Rcerr << "verbosity 'samples' option must be combined with at least one of (rule|label)" << std::endl;
+        return -1;
+    }
+    if (params->v_silent && (params->v_progress || params->v_log || params->v_rule || params->v_label || params->v_samples)) {
+        Rcpp::Rcerr << "verbosity 'silent' option must be passed without any additional verbosity parameters" << std::endl;
+        return -1;
     }
     free(vcopy);
     params->map_type = std::stoi(Rcpp::as<std::string> (params_list[0][4]));
