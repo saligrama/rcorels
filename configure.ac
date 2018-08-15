@@ -32,7 +32,6 @@ AC_PROG_CXX
 
 # Set language
 AC_LANG([C++])
-AX_CXX_COMPILE_STDCXX_11
 
 # Checks for libraries.
 #AC_CHECK_LIB([c], [cxx], [printf], [], [
