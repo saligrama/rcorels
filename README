@@ -4,6 +4,6 @@ To install, cd into the rcorels directory and run
 
 # R CMD INSTALL .
 
-Within R, you can use the function train() to train the CORELS model. The predict() and print() functions can be used to apply the resulting model to a set of test data, or print the model, respectively.
+Within R, you can use the function train.corels() to train the CORELS model. The predict.corels() and print.corels() functions can be used to apply the resulting model to a set of test data, or print the model, respectively.
 
 Data and manual pages coming soon.
