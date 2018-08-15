@@ -65,6 +65,7 @@ extern "C" {
 typedef unsigned long v_entry;
 #ifdef GMP
 typedef mpz_t VECTOR;
+
 #define VECTOR_ASSIGN(dest, src) mpz_init_set(dest, src)
 #else
 typedef v_entry *VECTOR;
@@ -128,6 +129,7 @@ typedef struct pred_model {
 	interval_t *confIntervals;
 } pred_model_t;
 
+
 /*
  * Functions in the library
  */
@@ -155,6 +157,7 @@ void rule_copy(VECTOR, VECTOR, int);
 
 int rule_isset(VECTOR, int);
 int rule_vinit(int, VECTOR *);
+int rule_veq(VECTOR src1, VECTOR src2, int nsamples);
 int rule_vfree(VECTOR *);
 int make_default(VECTOR *, int);
 void rule_vclear(int, VECTOR);

@@ -105,11 +105,7 @@ double run_corels (run_params_t *params, tracking_vector<unsigned short, DataStr
         printf("final num_evaluated: %zu\n", tree->num_evaluated());
         printf("final min_objective: %1.5f\n", tree->min_objective());
         printf("final accuracy: %1.5f\n", accuracy);
-   }
-
-    /*print_final_rulelist(r_list, tree->opt_predictions(),
-                     params->latex_out, params->rules, params->labels, params->opt_fname, verbosity.count("progress"));
-    */
+    }
 
     rulelist = r_list;
     preds = tree->opt_predictions();

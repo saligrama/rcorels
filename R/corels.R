@@ -1,7 +1,6 @@
 train_from_file.corels <- function(data_fname,label_fname,meta_fname="",curiosity_policy=2,max_nodes=10000, regularization=0.01, verbosity="progress", map_type=1, ablation=0, calculate_size=0, latex_out=0) {
     # ugly hack to get Rcpp to be able to recognize the parameters
     params_list <- c(toString(curiosity_policy), format(max_nodes, scientific=FALSE), toString(regularization), toString(verbosity), toString(map_type), toString(ablation), toString(calculate_size), toString(latex_out))
-    print(params_list)
     rs <- .Call('corels_train', PACKAGE='corels', params_list, data_fname, label_fname, meta_fname)
     rs
 }
@@ -51,10 +50,62 @@ train.corels <- function(tdata,pos_sign="1", neg_sign="0",rule_minlen=1,rule_max
     label <- t(cbind((tdata$label==neg_sign) +0, (tdata$label==pos_sign) +0))
     write.table(as.matrix(label), file='/tmp/tdata_R.label', sep=' ', row.names=c("{label=0}", "{label=1}"), col.names=FALSE, quote=FALSE)
 
-    # TODO support for minority points bound
-    rs <- train_from_file.corels('/tmp/tdata_R.out', '/tmp/tdata_R.label', curiosity_policy=curiosity_policy, max_nodes=max_nodes, regularization=regularization, verbosity=verbosity, map_type=map_type, ablation=ablation, calculate_size=calculate_size, latex_out=latex_out)
+    label <- t(label)
+    r_samples <- character(dim(mat_data_rules)[1])
+    for (i in 1:dim(mat_data_rules)[1]) {
+        r_samples[i] <- paste(mat_data_rules[i,], collapse='')
+    }
 
+    df = data.frame(r_samples, label[,1], list(rep(1,dim(mat_data_rules)[1])))
+    colnames(df) <- c("obs", "label", "count")
+    agg <- aggregate(cbind(label=df$label, count=df$count), by=list(obs=df$obs), FUN=sum)
+    ord <- agg[order(-agg$count),]
+    ml <- as.integer(ord$label < ord$count-ord$label)
+    d <- data.frame(obs=agg$obs, ml=ml)
+
+    ind <- integer(dim(df)[1])
+    for (i in 1:dim(df)[1]) {
+        ind[i] <- as.integer(df$label[i] == d[which(d$obs==df$obs[i]),]$ml)
+    }
+    write.table(t(as.matrix(ind)), file='/tmp/tdata_R.minor', sep=' ', row.names=c("{group_minority}"), col.names=FALSE, quote=FALSE)
+
+    rs <- train_from_file.corels('/tmp/tdata_R.out', '/tmp/tdata_R.label', meta_fname='/tmp/tdata_R.minor', curiosity_policy=curiosity_policy, max_nodes=max_nodes, regularization=regularization, verbosity=verbosity, map_type=map_type, ablation=ablation, calculate_size=calculate_size, latex_out=latex_out)
     structure(list(rs=rs, rulenames=rulenames, featurenames=featurenames, mat_feature_rule=mat), class="corels")
+}
+
+predict.corels <- function(object, tdata, ...) {
+    mat_data_feature <- get_data_feature_mat(tdata, object$featurenames)
+    mat_data_rules <- mat_data_feature %*% object$mat_feature_rule
+    mat_data_rules <- t(t(mat_data_rules)>=c(colSums(object$mat_feature_rule)))+0
+    nrules <- ncol(object$mat_feature_rule)
+    nsamples <- nrow(tdata)
+    mat_idx <- matrix(0, nrow = nsamples, ncol = nrules)
+
+    for (i in 1:length(object$rs$rule)) {
+        mat_idx[, object$rs$rule[i]] = i
+    }
+    mat_satisfy <- mat_data_rules * mat_idx
+
+    # find the earliest rule that captures the data
+    mat_caps <- as.matrix(apply(mat_satisfy, 1, function(x) ifelse(!identical(x[x>0], numeric(0)), min(x[x>0]), NaN) ))
+    mat_caps[is.na(mat_caps)] = length(object$rs$pred)
+    mat_pred <- as.integer(object$rs$pred[mat_caps])
+    list(mat_pred)
+}
+
+# S3 methods.
+# print the model in an interpretable way (if ... then ...)
+# caveat: only works when trained with R data. fix for train_from_file coming soon
+print.corels <- show.corels <- function(x, useS4 = FALSE, ...) {
+    cat(sprintf("\nOPTIMAL RULE LIST\n"))
+    for (i in 1:length(x$rs$pred)) {
+        if (i==1)
+            cat(sprintf("if      %s (rule %d) then predict %d\n", x$rulenames[x$rs$rule[i]], x$rs$rule[i], x$rs$pred[i]))
+        else if (i==length(x$rs$pred))
+            cat(sprintf("else  (default rule)  then predict %d\n", x$rs$pred[length(x$rs$pred)]))
+        else
+            cat(sprintf("else if %s (rule %d) then predict %d\n", x$rulenames[x$rs$rule[i]], x$rs$rule[i], x$rs$pred[i]))
+    }
 }
 
 # This function gets the data-by-feature matrix, given the data and all the feature names

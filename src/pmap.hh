@@ -95,7 +95,7 @@ class PermutationMap {
                              double objective, Node* parent, int num_not_captured, int nsamples, int len_prefix,
                              double c, double equivalent_minority, CacheTree* tree, VECTOR not_captured,
                              tracking_vector<unsigned short, DataStruct::Tree> parent_prefix);
-        ~PermutationMap() {}
+        virtual ~PermutationMap() {}
 };
 
 class PrefixPermutationMap : public PermutationMap {

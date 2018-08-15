@@ -4,3 +4,6 @@ importFrom("utils", "write.table")
 import(Rcpp)
 
 exportPattern("^[[:alpha:]]+")
+
+S3method(predict, corels)
+S3method(print, corels)

@@ -451,11 +451,9 @@ void output_error(data_t data, tracking_vector<unsigned short, DataStruct::Tree>
     }
 
     printf("\n\nOptimal rule list determined by CORELS:\n");
-    //print_final_rulelist(corels_opt_list, corels_opt_preds, NULL, data.rules, data.labels, NULL, 1);
 
     if(output_brute) {
         printf("\nOptimal rule list determined by brute force:\n");
-        //print_final_rulelist(brute_opt_list, brute_opt_preds, NULL, data.rules, data.labels, NULL, 1);
 
         printf("\nOptimal objective determined by CORELS: %f\n" \
                "Objective of optimal rule list determined by CORELS: %f\n" \

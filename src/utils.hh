@@ -20,7 +20,7 @@ class NullLogger {
     virtual void closeFile() {}
     NullLogger() {}
     NullLogger(double c, size_t nrules, std::set<std::string> verbosity, char* log_fname, int freq) {}
-    ~NullLogger() {}
+    virtual ~NullLogger() {}
 
     virtual void setLogFileName(char *fname) {}
     virtual void dumpState() {}
@@ -409,18 +409,4 @@ inline double time_diff(double t0) {
     return timestamp() - t0;
 }
 
-#include "alloc.hh"
-/*
- * Prints the final rulelist that CORELS returns.
- * rulelist -- rule ids of optimal rulelist
- * preds -- corresponding predictions of rules (+ default prediction)
- */
-/*void print_final_rulelist(const tracking_vector<unsigned short, DataStruct::Tree>& rulelist,
-                          const tracking_vector<bool, DataStruct::Tree>& preds,
-                          const bool latex_out,
-                          const rule_t rules[],
-                          const rule_t labels[],
-                          char fname[],
-   			  int print_progress);
-*/
 void print_machine_info();
