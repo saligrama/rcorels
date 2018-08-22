@@ -6,7 +6,6 @@ train_from_file.corels <- function(data_fname,label_fname,meta_fname="",curiosit
 }
 
 train.corels <- function(tdata,pos_sign="1", neg_sign="0",rule_minlen=1,rule_maxlen=1,minsupport_pos=0.10,minsupport_neg=0.10,curiosity_policy=2,max_nodes=10000, regularization=0.01, verbosity="progress", map_type=1, ablation=0, calculate_size=0, latex_out=1) {
-    params_list <- list(curiosity_policy, max_nodes, regularization, verbosity, map_type, ablation, calculate_size, latex_out)
     pos_data <- tdata[tdata$label==pos_sign,]
     neg_data <- tdata[tdata$label==neg_sign,]
 
