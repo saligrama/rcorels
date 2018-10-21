@@ -6,4 +6,6 @@ To install, cd into the rcorels directory and run
 
 Within R, you can use the function train.corels() to train the CORELS model. The predict.corels() and print.corels() functions can be used to apply the resulting model to a set of test data, or print the model, respectively.
 
-Data and manual pages coming soon.
+Note that for macOS users, the Homebrew version of R does not work with the Rcpp library that this depends on. Please use R from the official website.
+
+Bundled data coming soon.
