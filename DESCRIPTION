@@ -1,8 +1,8 @@
 Package: corels
 Type: Package
-Title: CORELS - Learning Certifiably Optimal Rule Lists
-Version: 0.1.1
-Date: 2018-08-15
+Title: CORELS - Certifiably Optimal Rule Lists
+Version: 0.1.2
+Date: 2018-10-21
 Authors@R: c(
 		person("Aditya", "Saligrama", role = c("aut", "cre"),
 			email = "saligrama427@gmail.com"),
@@ -33,4 +33,4 @@ RcppModules: corels
 LinkingTo: Rcpp
 NeedsCompilation: yes
 LazyData: yes
-SystemRequirements: gmp (>= 4.2.0), gsl
+SystemRequirements: gmp (>= 4.2.0)
