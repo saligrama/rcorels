@@ -1,8 +1,9 @@
 Package: corels
 Type: Package
-Title: Certifiably Optimal Rule Lists
+Title: Certifiably Optimal Rule Lists.
 Version: 0.2.1
 Date: 2018-10-21
+License: GPL-3
 Authors@R: c(
 		person("Aditya", "Saligrama", role = c("aut", "cre"),
 			email = "saligrama427@gmail.com"),
@@ -22,7 +23,7 @@ Author: Aditya Saligrama [aut, cre],
 	Elaine Angelino [aut, ctb],
 	Nicholas Larus-Stone [aut, ctb],
 	Daniel Alabi [aut, ctb],
-	Vassilios Kaxiras [aut, ctb]
+	Vassilios Kaxiras [aut, ctb],
 	Cynthia Rudin [aut, ctb],
 	Margo Seltzer [aut, ctb]
 Maintainer: Aditya Saligrama <saligrama427@gmail.com>

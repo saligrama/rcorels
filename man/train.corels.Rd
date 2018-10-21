@@ -10,7 +10,7 @@ TRAIN THE CORELS MODEL WITH THE GIVEN DATA
 TRAIN THE CORELS MODEL WITH THE GIVEN DATA
 }
 \usage{
-train.corels(tdata, pos_sign="1", neg_sign="0", rule_minlen=1, rule_maxlen=1, minsupport_pos=0.10, minsupport_neg=0.10, curiosity_policy=2, max_nodes=10000, verbosity="progress", map_type=1, ablation=0, calculate_size=0)
+train.corels(tdata, pos_sign="1", neg_sign="0", rule_minlen=1, rule_maxlen=1, minsupport_pos=0.10, minsupport_neg=0.10, curiosity_policy=2, max_nodes=10000, regularization = 0.01, verbosity="progress", map_type=1, ablation=0, calculate_size=0, latex_out=1)
 }
 
 %- maybe also 'usage' for other objects documented here.
@@ -18,7 +18,7 @@ train.corels(tdata, pos_sign="1", neg_sign="0", rule_minlen=1, rule_maxlen=1, mi
   \item{tdata}{a dataframe, with a "label" column specifying the correct labels for each observation.}
 
   \item{pos_sign}{the sign for the positive labels in the "label" column.}
-  
+
   \item{neg_sign}{the sign for the negative labels in the "label" column.}
 
   \item{rule_minlen}{the minimum number of cardinality for rules to be mined from the dataframe.}
