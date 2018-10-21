@@ -29,14 +29,14 @@ This function prints an corels object. It is a method for the generic function p
 
 \examples{
 # Let us use the titactoe dataset
-data(compas)
-for (name in names(compas)) {compas[name] <- as.factor(compas[,name])}
+data(tictactoe)
+for (name in names(tictactoe)) {tictactoe[name] <- as.factor(tictactoe[,name])}
 
 # Train on two-thirds of the data
-b = round(2*nrow(compas)/3, digit=0)
-data_train <- compas[1:b, ]
+b = round(2*nrow(tictactoe)/3, digit=0)
+data_train <- tictactoe[1:b, ]
 # Test on the remaining one third of the data
-data_test <- compas[(b+1):nrow(compas), ]
+data_test <- tictactoe[(b+1):nrow(tictactoe), ]
 # data_train, data_test are dataframes with factor columns
 # The class column is "label"
 
@@ -46,10 +46,9 @@ print(corels_model)
 
 # Make predictions on the test set
 yhat <- predict(corels_model, data_test)
-# yhat will be a list of binary predictions for the test data. 
+# yhat will be a list of binary predictions for the test data.
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }
 \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
-

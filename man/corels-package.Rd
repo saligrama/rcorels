@@ -5,17 +5,17 @@
   CORELS: LEARNING CERTIFIABLY OPTIMAL RULE LISTS
 }
 \description{
-Fit a \code{corels} model. 
+Fit a \code{corels} model.
 Learn from the data and create a decision rule list of binary predictions in the format of:
 
   if (condition1) then predict ...
-  
-  else if (condition2) then predict ... 
-  
+
+  else if (condition2) then predict ...
+
   else if (condition3) then predict ...
-  
-  ... 
-  
+
+  ...
+
   else (default rule) then predict ...
 
 ( See the examples below )
@@ -30,7 +30,7 @@ Aditya Saligrama, Elaine Angelino, Nicholas Larus-Stone, Daniel Alabi, Vassilios
   Elaine Angelino, Nicholas Larus-Stone, Daniel Alabi, Margo Seltzer and Cynthia Rudin (2017)
   \emph{Learning Certifiably Optimal Rule Lists for Categorical Data.}
   Journal of Machine Learning Research, 2018.
-  	
+
   Nicholas Larus-Stone, Elaine Angelino, Daniel Alabi, Margo Seltzer, Vassilios Kaxiras, Aditya Saligrama and Cynthia Rudin (2018)
   \emph{Systems Optimizations for Learning Certifiably Optimal Rule Lists.}
   SysML Conference, 2018.
@@ -40,15 +40,15 @@ Aditya Saligrama, Elaine Angelino, Nicholas Larus-Stone, Daniel Alabi, Vassilios
 \code{\link{corels}}, \code{\link{print.corels}}, \code{\link{show.corels}} and \code{\link{predict.corels}}
 }
 \examples{
-# Let us use the titactoe dataset
-data(compas)
-for (name in names(compas)) {compas[name] <- as.factor(compas[,name])}
+# Let us use the tictactoe dataset
+data(tictactoe)
+for (name in names(tictactoe)) {tictactoe[name] <- as.factor(tictactoe[,name])}
 
 # Train on two-thirds of the data
-b = round(2*nrow(compas)/3, digit=0)
-data_train <- compas[1:b, ]
+b = round(2*nrow(tictactoe)/3, digit=0)
+data_train <- tictactoe[1:b, ]
 # Test on the remaining one third of the data
-data_test <- compas[(b+1):nrow(compas), ]
+data_test <- tictactoe[(b+1):nrow(tictactoe), ]
 # data_train, data_test are dataframes with factor columns
 # The class column is "label"
 
@@ -58,5 +58,5 @@ print(corels_model)
 
 # Make predictions on the test set
 yhat <- predict(corels_model, data_test)
-# yhat will be a list of binary predictions for the test data. 
+# yhat will be a list of binary predictions for the test data.
 }
