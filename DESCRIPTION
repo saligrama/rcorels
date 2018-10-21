@@ -1,7 +1,7 @@
 Package: corels
 Type: Package
 Title: CORELS - Certifiably Optimal Rule Lists
-Version: 0.2.0
+Version: 0.2.1
 Date: 2018-10-21
 Authors@R: c(
 		person("Aditya", "Saligrama", role = c("aut", "cre"),
