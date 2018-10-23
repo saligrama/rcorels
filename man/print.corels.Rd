@@ -17,7 +17,7 @@ This function prints an corels object. It is a method for the generic function p
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ A CORELS model returned from \code{\link{corels}} function }
+  \item{x}{ A CORELS model returned from \code{\link{train.corels}} function }
   \item{useS4}{ An argument used to match showDefault function. Fixed as FALSE. }
   \item{\dots}{
     further arguments passed to or from other methods.
@@ -41,7 +41,11 @@ data_test <- tictactoe[(b+1):nrow(tictactoe), ]
 # The class column is "label"
 
 # Run the CORELS algorithm on the training set
-corels_model <- train.corels(data_train,rule_maxlen=2,minsupport_pos=0.005,minsupport_neg=0.005,max_nodes=10000000000)
+# Restrict max nodes to 10000 so it doesn't take too much time
+# For most cases, increase it to 10^8 or greater
+corels_model <- train.corels(data_train,rule_maxlen=2,
+  minsupport_pos=0.005,minsupport_neg=0.005,max_nodes=10000)
+
 print(corels_model)
 
 # Make predictions on the test set

@@ -10,7 +10,10 @@ TRAIN THE CORELS MODEL WITH THE GIVEN DATA
 TRAIN THE CORELS MODEL WITH THE GIVEN DATA
 }
 \usage{
-train.corels(tdata, pos_sign="1", neg_sign="0", rule_minlen=1, rule_maxlen=1, minsupport_pos=0.10, minsupport_neg=0.10, curiosity_policy=2, max_nodes=10000, regularization = 0.01, verbosity="progress", map_type=1, ablation=0, calculate_size=0, latex_out=1)
+train.corels(tdata, pos_sign="1", neg_sign="0", rule_minlen=1, rule_maxlen=1,
+minsupport_pos=0.10, minsupport_neg=0.10, curiosity_policy=2, max_nodes=10000,
+regularization = 0.01, verbosity="progress", map_type=1, ablation=0,
+calculate_size=0, latex_out=1)
 }
 
 %- maybe also 'usage' for other objects documented here.
@@ -33,6 +36,8 @@ train.corels(tdata, pos_sign="1", neg_sign="0", rule_minlen=1, rule_maxlen=1, mi
 
   \item{max_nodes}{maximum number of nodes in the CORELS queue. Use to limit runtime at the cost of a possibly non-optimal rule list.}
 
+  \item{regularization}{a number between 0 and 1 that relates the loss penalty to the length penalty for a rule list. A smaller regularization means a possibly longer rule list.}
+
   \item{verbosity}{a comma-separated string comprised of "progress", "log", "rule", "label", "samples", "silent". If the silent option is used, it must be the only option provided.}
 
   \item{map_type}{0 to use no map, 1 to use the prefix permutation map, or 2 to use the captured symmetry map.}
@@ -40,6 +45,8 @@ train.corels(tdata, pos_sign="1", neg_sign="0", rule_minlen=1, rule_maxlen=1, mi
   \item{ablation}{0 to use all optimizations, 1 to exclude the minimum support bounds, 2 to exclude the lookahead bound,}
 
   \item{calculate_size}{calculate upper bound on remaining search space.}
+
+  \item{latex_out}{output rule list in LaTeX format.}
 }
 \value{
 Return a list of :
@@ -77,8 +84,11 @@ data_test <- tictactoe[(b+1):nrow(tictactoe), ]
 # data_train, data_test are dataframes with factor columns
 # The class column is "label"
 
-# Run the CORELS algorithm on the training set
-corels_model <- train.corels(data_train,rule_maxlen=2,minsupport_pos=0.005,minsupport_neg=0.005,max_nodes=10000000000)
+# Restrict max nodes to 10000 so it doesn't take too much time
+# For most cases, increase it to 10^8 or greater
+corels_model <- train.corels(data_train,rule_maxlen=2,
+  minsupport_pos=0.005,minsupport_neg=0.005,max_nodes=10000)
+
 print(corels_model)
 
 # Make predictions on the test set

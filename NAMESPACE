@@ -1,6 +1,7 @@
 useDynLib(corels)
 importFrom("methods", "as", "new")
 importFrom("utils", "write.table")
+importFrom("stats", "aggregate")
 import(Rcpp)
 
 exportPattern("^[[:alpha:]]+")

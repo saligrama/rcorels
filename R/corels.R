@@ -1,11 +1,11 @@
-train_from_file.corels <- function(data_fname,label_fname,meta_fname="",curiosity_policy=2,max_nodes=10000, regularization=0.01, verbosity="progress", map_type=1, ablation=0, calculate_size=0, latex_out=0) {
-    # ugly hack to get Rcpp to be able to recognize the parameters
-    params_list <- c(toString(curiosity_policy), format(max_nodes, scientific=FALSE), toString(regularization), toString(verbosity), toString(map_type), toString(ablation), toString(calculate_size), toString(latex_out))
-    rs <- .Call('corels_train', PACKAGE='corels', params_list, data_fname, label_fname, meta_fname)
-    rs
-}
-
 train.corels <- function(tdata,pos_sign="1", neg_sign="0",rule_minlen=1,rule_maxlen=1,minsupport_pos=0.10,minsupport_neg=0.10,curiosity_policy=2,max_nodes=10000, regularization=0.01, verbosity="progress", map_type=1, ablation=0, calculate_size=0, latex_out=1) {
+    train_from_file <- function(data_fname,label_fname,meta_fname="",curiosity_policy=2,max_nodes=10000, regularization=0.01, verbosity="progress", map_type=1, ablation=0, calculate_size=0, latex_out=0) {
+        # ugly hack to get Rcpp to be able to recognize the parameters
+        params_list <- c(toString(curiosity_policy), format(max_nodes, scientific=FALSE), toString(regularization), toString(verbosity), toString(map_type), toString(ablation), toString(calculate_size), toString(latex_out))
+        rs <- .Call('corels_train', PACKAGE='corels', params_list, data_fname, label_fname, meta_fname)
+        rs
+    }
+
     pos_data <- tdata[tdata$label==pos_sign,]
     neg_data <- tdata[tdata$label==neg_sign,]
 
@@ -45,9 +45,9 @@ train.corels <- function(tdata,pos_sign="1", neg_sign="0",rule_minlen=1,rule_max
     mat_data_rules <- mat_data_feature %*% mat
     mat_data_rules <- t(t(mat_data_rules)>=c(colSums(mat)))+0
 
-    write.table(as.matrix(t(mat_data_rules)), file='/tmp/tdata_R.out', sep=' ', row.names=rulenames, col.names=FALSE, quote=FALSE)
+    write.table(as.matrix(t(mat_data_rules)), file='tdata_R.out', sep=' ', row.names=rulenames, col.names=FALSE, quote=FALSE)
     label <- t(cbind((tdata$label==neg_sign) +0, (tdata$label==pos_sign) +0))
-    write.table(as.matrix(label), file='/tmp/tdata_R.label', sep=' ', row.names=c("{label=0}", "{label=1}"), col.names=FALSE, quote=FALSE)
+    write.table(as.matrix(label), file='tdata_R.label', sep=' ', row.names=c("{label=0}", "{label=1}"), col.names=FALSE, quote=FALSE)
 
     label <- t(label)
     r_samples <- character(dim(mat_data_rules)[1])
@@ -66,9 +66,9 @@ train.corels <- function(tdata,pos_sign="1", neg_sign="0",rule_minlen=1,rule_max
     for (i in 1:dim(df)[1]) {
         ind[i] <- as.integer(df$label[i] == d[which(d$obs==df$obs[i]),]$ml)
     }
-    write.table(t(as.matrix(ind)), file='/tmp/tdata_R.minor', sep=' ', row.names=c("{group_minority}"), col.names=FALSE, quote=FALSE)
+    write.table(t(as.matrix(ind)), file='tdata_R.minor', sep=' ', row.names=c("{group_minority}"), col.names=FALSE, quote=FALSE)
 
-    rs <- train_from_file.corels('/tmp/tdata_R.out', '/tmp/tdata_R.label', meta_fname='/tmp/tdata_R.minor', curiosity_policy=curiosity_policy, max_nodes=max_nodes, regularization=regularization, verbosity=verbosity, map_type=map_type, ablation=ablation, calculate_size=calculate_size, latex_out=latex_out)
+    rs <- train_from_file('tdata_R.out', 'tdata_R.label', meta_fname='tdata_R.minor', curiosity_policy=curiosity_policy, max_nodes=max_nodes, regularization=regularization, verbosity=verbosity, map_type=map_type, ablation=ablation, calculate_size=calculate_size, latex_out=latex_out)
     structure(list(rs=rs, rulenames=rulenames, featurenames=featurenames, mat_feature_rule=mat), class="corels")
 }
 
@@ -94,7 +94,6 @@ predict.corels <- function(object, tdata, ...) {
 
 # S3 methods.
 # print the model in an interpretable way (if ... then ...)
-# caveat: only works when trained with R data. fix for train_from_file coming soon
 print.corels <- show.corels <- function(x, useS4 = FALSE, ...) {
     cat(sprintf("\nOPTIMAL RULE LIST\n"))
     for (i in 1:length(x$rs$pred)) {

@@ -42,8 +42,12 @@ data_test <- tictactoe[(b+1):nrow(tictactoe), ]
 # The class column is "label"
 
 # Run the CORELS algorithm on the training set
-  corels_model <- train.corels(data_train,rule_maxlen=2,minsupport_pos=0.005,minsupport_neg=0.005,max_nodes=10000000000)
-  print(corels_model)
+# Restrict max nodes to 10000 so it doesn't take too much time
+# For most cases, increase it to 10^8 or greater
+corels_model <- train.corels(data_train,rule_maxlen=2,
+  minsupport_pos=0.005,minsupport_neg=0.005,max_nodes=10000)
+
+print(corels_model)
 
 # Make predictions on the test set
   yhat <- predict(corels_model, data_test)

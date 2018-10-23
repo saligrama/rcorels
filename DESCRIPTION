@@ -1,6 +1,6 @@
 Package: corels
 Type: Package
-Title: Certifiably Optimal Rule Lists.
+Title: Certifiably Optimal Rule Lists
 Version: 0.2.1
 Date: 2018-10-21
 License: GPL-3
@@ -27,7 +27,7 @@ Author: Aditya Saligrama [aut, cre],
 	Cynthia Rudin [aut, ctb],
 	Margo Seltzer [aut, ctb]
 Maintainer: Aditya Saligrama <saligrama427@gmail.com>
-Description: CORELS - Learning Certifiably Optimal Rule Lists
+Description: Rcpp-based R package that interfaces with the Certifiably Optimal Rule Lists (CORELS) algorithm.
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.12.4), arules, methods
 RcppModules: corels

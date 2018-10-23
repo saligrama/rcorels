@@ -21,7 +21,7 @@ Learn from the data and create a decision rule list of binary predictions in the
 ( See the examples below )
 }
 \details{
-This package contains three functions: \code{\link{corels}}, \code{\link{print.corels}}, \code{\link{show.corels}}, and \code{\link{predict.corels}}
+This package contains three functions: \code{\link{train.corels}}, \code{\link{print.corels}}, and \code{\link{predict.corels}}
 }
 \author{
 Aditya Saligrama, Elaine Angelino, Nicholas Larus-Stone, Daniel Alabi, Vassilios Kaxiras, Cynthia Rudin, Margo Seltzer
@@ -37,7 +37,7 @@ Aditya Saligrama, Elaine Angelino, Nicholas Larus-Stone, Daniel Alabi, Vassilios
 }
 \keyword{ package }
 \seealso{
-\code{\link{corels}}, \code{\link{print.corels}}, \code{\link{show.corels}} and \code{\link{predict.corels}}
+\code{\link{train.corels}}, \code{\link{print.corels}}, and \code{\link{predict.corels}}
 }
 \examples{
 # Let us use the tictactoe dataset
@@ -53,7 +53,11 @@ data_test <- tictactoe[(b+1):nrow(tictactoe), ]
 # The class column is "label"
 
 # Run the CORELS algorithm on the training set
-corels_model <- train.corels(data_train,rule_maxlen=2,minsupport_pos=0.005,minsupport_neg=0.005,max_nodes=10000000000)
+# Restrict max nodes to 10000 so it doesn't take too much time
+# For most cases, increase it to 10^8 or greater
+corels_model <- train.corels(data_train,rule_maxlen=2,
+  minsupport_pos=0.005,minsupport_neg=0.005,max_nodes=10000)
+
 print(corels_model)
 
 # Make predictions on the test set
