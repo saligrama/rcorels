@@ -10,6 +10,18 @@
 
 #define BUFSZ 512
 
+#ifndef HAVE_STRSEP
+char * strsep(char **sp, char *sep) {
+    char *p, *s;
+    if (sp == NULL || *sp == NULL || **sp == '\0') return(NULL);
+    s = *sp;
+    p = s + strcspn(s, sep);
+    if (*p != '\0') *p++ = '\0';
+    *sp = p;
+    return(s);
+}
+#endif
+
 int load_params(Rcpp::StringVector *params_list, run_params_t *params) {
     // since all the inputs are strings (otherwise Rcpp won't recognize anything), convert them back to ints later
     params->curiosity_policy = std::stoi(Rcpp::as<std::string> (params_list[0][0]));
@@ -139,7 +151,7 @@ Rcpp::List _train (Rcpp::StringVector param_list, std::string data_fname, std::s
     }
 
     tracking_vector<unsigned short, DataStruct::Tree> rulelist;
-    tracking_vector<bool, DataStruct::Tree> preds;
+    tracking_vector<unsigned short, DataStruct::Tree> preds;
     run_corels(&params, rulelist, preds);
 
     Rcpp::IntegerVector rule_v;

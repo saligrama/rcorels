@@ -432,9 +432,9 @@ double evaluate_data(data_t data, rulelist_t list, VECTOR *total_captured_correc
 }
 
 void output_error(data_t data, tracking_vector<unsigned short, DataStruct::Tree> corels_opt_list,
-                  tracking_vector<bool, DataStruct::Tree> corels_opt_preds,
+                  tracking_vector<unsigned short, DataStruct::Tree> corels_opt_preds,
                   tracking_vector<unsigned short, DataStruct::Tree> brute_opt_list,
-                  tracking_vector<bool, DataStruct::Tree> brute_opt_preds, bool output_brute, double corels_obj,
+                  tracking_vector<unsigned short, DataStruct::Tree> brute_opt_preds, bool output_brute, double corels_obj,
                   double eval_check_obj, double brute_obj, int v)
 {
     printf("\n\n\n\n/***************************************************************/\n\n");
@@ -558,7 +558,7 @@ int run_random_tests(size_t num_iters, int num_rules, int num_samples, double c,
 
         // Evaluate CORELS objective to make sure it corresponds to the correct rule list outputted as well
         tracking_vector<unsigned short, DataStruct::Tree> opt_list = tree->opt_rulelist();
-        tracking_vector<bool, DataStruct::Tree> opt_preds = tree->opt_predictions();
+        tracking_vector<unsigned short, DataStruct::Tree> opt_preds = tree->opt_predictions();
         tracking_vector<int, DataStruct::Tree> opt_preds_int(opt_preds.begin(), opt_preds.end());
 
         rulelist_t rlist;
@@ -571,7 +571,7 @@ int run_random_tests(size_t num_iters, int num_rules, int num_samples, double c,
         double e_obj = evaluate_data(data, rlist, NULL, c, v);
 
         tracking_vector<unsigned short, DataStruct::Tree> b_opt_list;
-        tracking_vector<bool, DataStruct::Tree> b_opt_preds;
+        tracking_vector<unsigned short, DataStruct::Tree> b_opt_preds;
 
         double b_obj = c_obj;
         if(b_max_list_len) {

@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-double run_corels (run_params_t *params, tracking_vector<unsigned short, DataStruct::Tree>& rulelist, tracking_vector<bool, DataStruct::Tree>& preds);
+double run_corels (run_params_t *params, tracking_vector<unsigned short, DataStruct::Tree>& rulelist, tracking_vector<unsigned short, DataStruct::Tree>& preds);
 
 #ifdef __cplusplus
 }

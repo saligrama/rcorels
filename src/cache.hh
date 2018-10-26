@@ -30,7 +30,7 @@ class Node {
     inline void set_deleted();
 
     // Returns pair of prefixes and predictions for the path from this node to the root
-    inline std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<bool, DataStruct::Tree> >
+    inline std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<unsigned short, DataStruct::Tree> >
       get_prefix_and_predictions();
 
     inline size_t depth() const;
@@ -95,7 +95,7 @@ class CacheTree {
 
     inline double min_objective() const;
     inline tracking_vector<unsigned short, DataStruct::Tree> opt_rulelist() const;
-    inline tracking_vector<bool, DataStruct::Tree> opt_predictions() const;
+    inline tracking_vector<unsigned short, DataStruct::Tree> opt_predictions() const;
 
     inline size_t num_nodes() const;
     inline size_t num_evaluated() const;
@@ -139,7 +139,7 @@ class CacheTree {
 
     double min_objective_;
     tracking_vector<unsigned short, DataStruct::Tree> opt_rulelist_;
-    std::vector<bool, track_alloc<bool, DataStruct::Tree> > opt_predictions_;
+    tracking_vector<unsigned short, DataStruct::Tree> opt_predictions_;
 
     rule_t *rules_;
     rule_t *labels_;
@@ -185,12 +185,12 @@ inline void Node::set_deleted() {
     deleted_ = 1;
 }
 
-inline std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<bool, DataStruct::Tree> >
+inline std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<unsigned short, DataStruct::Tree> >
     Node::get_prefix_and_predictions() {
     tracking_vector<unsigned short, DataStruct::Tree> prefix;
-    tracking_vector<bool, DataStruct::Tree> predictions;
+    tracking_vector<unsigned short, DataStruct::Tree> predictions;
     tracking_vector<unsigned short, DataStruct::Tree>::iterator it1 = prefix.begin();
-    tracking_vector<bool, DataStruct::Tree>::iterator it2 = predictions.begin();
+    tracking_vector<unsigned short, DataStruct::Tree>::iterator it2 = predictions.begin();
     Node* node = this;
     for(size_t i = depth_; i > 0; --i) {
         it1 = prefix.insert(it1, node->id());
@@ -253,7 +253,7 @@ inline tracking_vector<unsigned short, DataStruct::Tree> CacheTree::opt_rulelist
     return opt_rulelist_;
 }
 
-inline tracking_vector<bool, DataStruct::Tree> CacheTree::opt_predictions() const {
+inline tracking_vector<unsigned short, DataStruct::Tree> CacheTree::opt_predictions() const {
     return opt_predictions_;
 }
 
@@ -333,7 +333,7 @@ CacheTree::update_opt_rulelist(tracking_vector<unsigned short, DataStruct::Tree>
  */
 inline void
 CacheTree::update_opt_predictions(Node* parent, bool new_pred, bool new_default_pred) {
-    tracking_vector<bool, DataStruct::Tree> predictions;
+    tracking_vector<unsigned short, DataStruct::Tree> predictions;
     Node* node = parent;
     for(size_t i = parent->depth(); i > 0; --i) {
         predictions.push_back(node->prediction());

@@ -30,6 +30,76 @@
 #include <unistd.h>
 #include "rule.h"
 
+/* The original code is public domain -- Will Hartung 4/9/09 */
+/* Modifications, public domain as well, by Antti Haapala, 11/10/17 */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <stdint.h>
+
+// if typedef doesn't exist (msvc, blah)
+typedef intptr_t ssize_t;
+
+ssize_t getline(char **lineptr, size_t *n, FILE *stream) {
+    size_t pos;
+    int c;
+
+    if (lineptr == NULL || stream == NULL || n == NULL) {
+        errno = EINVAL;
+        return -1;
+    }
+
+    c = fgetc(stream);
+    if (c == EOF) {
+        return -1;
+    }
+
+    if (*lineptr == NULL) {
+        *lineptr = malloc(128);
+        if (*lineptr == NULL) {
+            return -1;
+        }
+        *n = 128;
+    }
+
+    pos = 0;
+    while(c != EOF) {
+        if (pos + 1 >= *n) {
+            size_t new_size = *n + (*n >> 2);
+            if (new_size < 128) {
+                new_size = 128;
+            }
+            char *new_ptr = realloc(*lineptr, new_size);
+            if (new_ptr == NULL) {
+                return -1;
+            }
+            *n = new_size;
+            *lineptr = new_ptr;
+        }
+
+        ((unsigned char *)(*lineptr))[pos ++] = c;
+        if (c == '\n') {
+            break;
+        }
+        c = fgetc(stream);
+    }
+
+    (*lineptr)[pos] = '\0';
+    return pos;
+}
+
+#ifndef HAVE_STRSEP
+char * strsep(char **sp, char *sep) {
+    char *p, *s;
+    if (sp == NULL || *sp == NULL || **sp == '\0') return(NULL);
+    s = *sp;
+    p = s + strcspn(s, sep);
+    if (*p != '\0') *p++ = '\0';
+    *sp = p;
+    return(s);
+}
+#endif
 
 #define RULE_INC 100
 
@@ -143,7 +213,7 @@ rules_init(const char *infile, int *nrules,
 
         free(line);
         line = NULL;
-	
+
 	/* All done! */
 	fclose(fi);
 
@@ -598,59 +668,6 @@ ruleset_delete(rule_t *rules, int nrules, ruleset_t *rs, int ndx)
 	return;
 }
 
-/*
- * We create random rulesets for testing and for creating initial proposals
- * in MCMC
- */
-int
-create_random_ruleset(int size,
-    int nsamples, int nrules, rule_t *rules, ruleset_t **rs)
-{
-	int i, j, *ids, next, ret;
-
-	ids = calloc(size, sizeof(int));
-	for (i = 0; i < (size - 1); i++) {
-try_again:	next = RANDOM_RANGE(1, (nrules - 1));
-		/* Check for duplicates. */
-		for (j = 0; j < i; j++)
-			if (ids[j] == next)
-				goto try_again;
-		ids[i] = next;
-	}
-
-	/* Always put rule 0 (the default) as the last rule. */
-	ids[i] = 0;
-
-	ret = ruleset_init(size, nsamples, ids, rules, rs);
-	free(ids);
-	return (ret);
-}
-
-#define MAX_TRIES 10
-/*
- * Given a rule set, pick a random rule (not already in the set).
- */
-int
-pick_random_rule(int nrules, ruleset_t *rs)
-{
-	unsigned new_rule;
-
-	int cnt = 0;
-pickrule:
-	if (cnt < MAX_TRIES)
-		new_rule = RANDOM_RANGE(1, (nrules-1));
-	else
-		new_rule = 1 + (new_rule % (nrules-2));
-
-	for (int j = 0; j < rs->n_rules; j++) {
-		if (rs->rules[j].rule_id == new_rule) {
-			cnt++;
-			goto pickrule;
-		}
-	}
-	return (new_rule);
-}
-
 /* dest must exist */
 void
 rule_copy(VECTOR dest, VECTOR src, int len)
@@ -881,7 +898,7 @@ rule_not(VECTOR dest, VECTOR src, int nsamples, int *ret_cnt)
 
 /*
  * Compare two vectors for equality.
- * Return 0 for equal; -1 for less than (mpz only); 1 for greater 
+ * Return 0 for equal; -1 for less than (mpz only); 1 for greater
  * than (mpz) or not equal (default)
  */
 int

@@ -2,8 +2,6 @@
 #include "alloc.hh"
 #include <stdio.h>
 #include <assert.h>
-#include <sys/utsname.h>
-
 
 Logger::Logger(double c, size_t nrules, std::set<std::string> verbosity, char* log_fname, int freq) {
       _c = c;
@@ -105,7 +103,7 @@ std::string Logger::dumpPrefixLens() {
  * Given a rulelist and predictions, will output a human-interpretable form to a file.
  */
 /*void print_final_rulelist(const tracking_vector<unsigned short, DataStruct::Tree>& rulelist,
-                          const tracking_vector<bool, DataStruct::Tree>& preds,
+                          const tracking_vector<unsigned short, DataStruct::Tree>& preds,
                           const bool latex_out,
                           const rule_t rules[],
                           const rule_t labels[],
@@ -163,17 +161,3 @@ std::string Logger::dumpPrefixLens() {
 /*
  * Prints out information about the machine.
  */
-void print_machine_info() {
-    struct utsname buffer;
-
-    if (uname(&buffer) == 0) {
-        printf("System information:\n"
-               "system name-> %s; node name-> %s; release-> %s; "
-               "version-> %s; machine-> %s\n\n",
-               buffer.sysname,
-               buffer.nodename,
-               buffer.release,
-               buffer.version,
-               buffer.machine);
-    }
-}

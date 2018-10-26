@@ -12,7 +12,7 @@ NullLogger* logger;
 
 extern "C" {
 
-double run_corels (run_params_t *params, tracking_vector<unsigned short, DataStruct::Tree>& rulelist, tracking_vector<bool, DataStruct::Tree>& preds) {
+double run_corels (run_params_t *params, tracking_vector<unsigned short, DataStruct::Tree>& rulelist, tracking_vector<unsigned short, DataStruct::Tree>& preds) {
 
     std::set<std::string> verbosity;
 
@@ -29,9 +29,6 @@ double run_corels (run_params_t *params, tracking_vector<unsigned short, DataStr
 
     if (verbosity.size() == 0)
         verbosity.insert("progress");
-
-    if (verbosity.count("log"))
-        print_machine_info();
 
     if (verbosity.count("rule")) {
         printf("%d rules %d samples\n\n", params->nrules, params->nsamples);

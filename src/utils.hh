@@ -408,5 +408,3 @@ inline double timestamp() {
 inline double time_diff(double t0) {
     return timestamp() - t0;
 }
-
-void print_machine_info();

@@ -1,7 +1,6 @@
 #include "queue.hh"
 #include <algorithm>
 #include <iostream>
-#include <sys/resource.h>
 #include <stdio.h>
 
 Queue::Queue(std::function<bool(Node*, Node*)> cmp, char const *type)
@@ -275,9 +274,9 @@ int bbound(CacheTree* tree, size_t max_num_nodes, Queue* q, PermutationMap* p) {
             if (lb < min_lower_bound)
                 min_lower_bound = lb;
             if (verbosity.count("log")) {
-                std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<bool, DataStruct::Tree> > pp_pair = node->get_prefix_and_predictions();
+                std::pair<tracking_vector<unsigned short, DataStruct::Tree>, tracking_vector<unsigned short, DataStruct::Tree> > pp_pair = node->get_prefix_and_predictions();
                 tracking_vector<unsigned short, DataStruct::Tree> prefix = std::move(pp_pair.first);
-                tracking_vector<bool, DataStruct::Tree> predictions = std::move(pp_pair.second);
+                tracking_vector<unsigned short, DataStruct::Tree> predictions = std::move(pp_pair.second);
                 f << node->lower_bound() << " " << node->objective() << " " << node->depth() << " "
                   << (double) node->num_captured() / (double) tree->nsamples() << " ";
                 for(size_t i = 0; i < prefix.size(); ++i) {

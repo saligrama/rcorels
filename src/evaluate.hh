@@ -134,9 +134,9 @@ run_random_tests(size_t num_iters, int num_rules, int num_samples, double c, int
 **/
 void
 output_error(data_t data, tracking_vector<unsigned short, DataStruct::Tree> corels_opt_list,
-                 tracking_vector<bool, DataStruct::Tree> corels_opt_preds,
+                 tracking_vector<unsigned short, DataStruct::Tree> corels_opt_preds,
                  tracking_vector<unsigned short, DataStruct::Tree> brute_opt_list,
-                 tracking_vector<bool, DataStruct::Tree> brute_opt_preds, bool output_brute, double corels_obj,
+                 tracking_vector<unsigned short, DataStruct::Tree> brute_opt_preds, bool output_brute, double corels_obj,
                  double eval_check_obj, double brute_obj, int v);
 
 
