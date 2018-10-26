@@ -26,7 +26,6 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include "rule.h"
 
@@ -41,6 +40,7 @@
 // if typedef doesn't exist (msvc, blah)
 typedef intptr_t ssize_t;
 
+#ifndef HAVE_GETLINE
 ssize_t getline(char **lineptr, size_t *n, FILE *stream) {
     size_t pos;
     int c;
@@ -88,6 +88,7 @@ ssize_t getline(char **lineptr, size_t *n, FILE *stream) {
     (*lineptr)[pos] = '\0';
     return pos;
 }
+#endif
 
 #ifndef HAVE_STRSEP
 char * strsep(char **sp, char *sep) {
