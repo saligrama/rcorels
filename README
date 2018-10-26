@@ -9,3 +9,5 @@ Within R, you can use the function train.corels() to train the CORELS model. The
 Note that for macOS users, the Homebrew version of R does not work with the Rcpp library that this depends on. Please use R from the official website.
 
 Bundled data coming soon.
+
+NOTE: This package compiles on Windows, but will NOT run on that platform due to significant incompatibilities between our code and Microsoft/MinGW's lack of support for several standard library functions. Please do not try to run this on Windows, as it will crash R. Instead, using Windows Subsystem for Linux (WSL) is the recommended way to run CORELS on Windows.
